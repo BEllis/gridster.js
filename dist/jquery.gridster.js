@@ -1380,6 +1380,33 @@
     };
 
 
+    fn._ondragstart = function(triggerEvents) {
+        var self = this;
+        self.$widgets.filter('.player-revert')
+            .removeClass('player-revert');
+
+        self.$player = $(this);
+        self.$helper = self.options.draggable.helper === 'clone' ?
+            $(ui.helper) : self.$player;
+        self.helper = !self.$helper.is(self.$player);
+
+        self.on_start_drag.call(self, event, ui);
+        if (triggerEvents) {
+            self.$el.trigger('gridster:dragstart');
+        }
+    };
+    
+    fn._ondragstop = function() {
+        var self = this;
+        self.on_stop_drag.call(self, event, ui);
+        if (triggerEvents) {
+            self.$el.trigger('gridster:dragstop');    
+        }
+        
+        self.$widgets.filter('.player-revert')
+            .removeClass('player-revert');
+    };
+
     /**
     * Make widgets draggable.
     *
@@ -1392,20 +1419,10 @@
         var draggable_options = $.extend(true, {}, this.options.draggable, {
             offset_left: this.options.widget_margins[0],
             start: function(event, ui) {
-                self.$widgets.filter('.player-revert')
-                    .removeClass('player-revert');
-
-                self.$player = $(this);
-                self.$helper = self.options.draggable.helper === 'clone' ?
-                    $(ui.helper) : self.$player;
-                self.helper = !self.$helper.is(self.$player);
-
-                self.on_start_drag.call(self, event, ui);
-                self.$el.trigger('gridster:dragstart');
+                self._ondragstart(true);
             },
             stop: function(event, ui) {
-                self.on_stop_drag.call(self, event, ui);
-                self.$el.trigger('gridster:dragstop');
+                self._ondragstop(true);
             },
             drag: throttle(function(event, ui) {
                 self.on_drag.call(self, event, ui);
