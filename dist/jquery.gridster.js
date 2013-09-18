@@ -1379,6 +1379,51 @@
         } */
     };
 
+    fn.tempFix = function() { 
+        var self = this;
+        self.$widgets.filter('.player-revert')
+            .removeClass('player-revert');
+
+        self.$player = $(this);
+        self.$helper = self.options.draggable.helper === 'clone' ?
+            $(ui.helper) : self.$player;
+        self.helper = !self.$helper.is(self.$player);
+        this.$helper.add(this.$player).add(this.$wrapper).addClass('dragging');
+
+        this.$player.addClass('player');
+        this.player_grid_data = this.$player.coords().grid;
+        this.placeholder_grid_data = $.extend({}, this.player_grid_data);
+
+        //set new grid height along the dragging period
+        this.$el.css('height', this.$el.height() +
+          (this.player_grid_data.size_y * this.min_widget_height));
+
+        var colliders = this.faux_grid;
+        var coords = this.$player.data('coords').coords;
+
+        this.cells_occupied_by_player = this.get_cells_occupied(
+            this.player_grid_data);
+        this.cells_occupied_by_placeholder = this.get_cells_occupied(
+            this.placeholder_grid_data);
+
+        this.last_cols = [];
+        this.last_rows = [];
+
+
+        // see jquery.collision.js
+        this.collision_api = this.$helper.collision(
+            colliders, this.options.collision);
+
+        this.$preview_holder = $('<li />', {
+              'class': 'preview-holder',
+              'data-row': this.$player.attr('data-row'),
+              'data-col': this.$player.attr('data-col'),
+              css: {
+                  width: coords.width,
+                  height: coords.height
+              }
+        }).appendTo(this.$el);
+    }
 
     /**
     * Make widgets draggable.
