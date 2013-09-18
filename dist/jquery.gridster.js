@@ -1380,7 +1380,7 @@
     };
 
 
-    fn._ondragstart = function(triggerEvents) {
+    fn._ondragstart = function(ui, triggerEvents) {
         var self = this;
         self.$widgets.filter('.player-revert')
             .removeClass('player-revert');
@@ -1396,7 +1396,7 @@
         }
     };
     
-    fn._ondragstop = function() {
+    fn._ondragstop = function(ui, triggerEvents) {
         var self = this;
         self.on_stop_drag.call(self, event, ui);
         if (triggerEvents) {
@@ -1419,10 +1419,10 @@
         var draggable_options = $.extend(true, {}, this.options.draggable, {
             offset_left: this.options.widget_margins[0],
             start: function(event, ui) {
-                self._ondragstart(true);
+                self._ondragstart(event, ui, true);
             },
             stop: function(event, ui) {
-                self._ondragstop(true);
+                self._ondragstop(event, ui, true);
             },
             drag: throttle(function(event, ui) {
                 self.on_drag.call(self, event, ui);
