@@ -1379,15 +1379,13 @@
         } */
     };
 
-    fn.tempFix = function() { 
-        var self = this;
-        self.$widgets.filter('.player-revert')
+    fn.tempFix = function(element) { 
+        this.$widgets.filter('.player-revert')
             .removeClass('player-revert');
 
-        self.$player = $(this);
-        self.$helper = self.options.draggable.helper === 'clone' ?
-            $(ui.helper) : self.$player;
-        self.helper = !self.$helper.is(self.$player);
+        this.$player = $(element);
+        this.$helper = this.$player;
+        this.helper = !this.$helper.is(self.$player);
         this.$helper.add(this.$player).add(this.$wrapper).addClass('dragging');
 
         this.$player.addClass('player');
